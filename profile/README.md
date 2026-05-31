@@ -69,4 +69,4 @@ follow **Clean Architecture** with Inversify dependency injection.
 
 ---
 
-<sub>🐲 Built by the Meekong engineering team · A product of <a href="https://github.com/uplift-technology-company-limited">Uplift Technology</a></sub>
+<sub>🐲 Build by Meekong Team x <a href="https://github.com/uplift-technology-company-limited">Uplift Technology</a></sub>
