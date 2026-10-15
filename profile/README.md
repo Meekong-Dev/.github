@@ -23,8 +23,12 @@ high-concurrency trading at marketplace scale.
 
 ### Platform Architecture
 
-Built as a **Turborepo monorepo** with **Bun** as the unified package manager. All Node.js services
-follow **Clean Architecture** with Inversify dependency injection.
+**Backend v2 (in development)** — a Go service built with **hexagonal architecture** (ports & adapters):
+OAuth 2.1 / OIDC identity with PKCE and scope-based RBAC, money as exact integer satang, a transactional
+outbox for async work, and a contract-first **API v4** (OpenAPI) that the app, admin and web are generated from.
+
+**Platform v1 (production)** — a **Turborepo monorepo** with **Bun** as the unified package manager.
+All Node.js services follow **Clean Architecture** with Inversify dependency injection.
 
 | Service | Stack | Role |
 |---------|-------|------|
@@ -33,7 +37,8 @@ follow **Clean Architecture** with Inversify dependency injection.
 | **Admin** | Next.js 15 + React 19 | Operations & management dashboard |
 | **Web** | Next.js 16 + React 19 | Customer-facing storefront & landing |
 | **AI** | Python + Meilisearch | Search indexing & hybrid retrieval |
-| **Infra** | Terraform (AWS IaC) | Infrastructure as code |
+| **API v2** | Go · hexagonal · pgx/sqlc | Next-generation backend (`/api/v4`) |
+| **Infra** | ECS task definitions + GitHub Actions | Deployed per environment, versioned by git tag |
 
 * **Async processing** — BullMQ queues for media pipelines & auction lifecycle (winner, refund, forfeit, expiration)
 * **Search sync** — PostgreSQL CDC (wal2json) → MeiliBridge → Meilisearch
@@ -42,6 +47,7 @@ follow **Clean Architecture** with Inversify dependency injection.
 ### Technology Stack
 
 <p align="left">
+<a href="https://go.dev/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/go-colored.svg" alt="Go" title="Go" width="36" height="36" /></a>
 <a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/typescript-colored.svg" alt="TypeScript" title="TypeScript" width="36" height="36" /></a>
 <a href="https://nodejs.org/en/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/nodejs-colored.svg" alt="Node.js" title="Node.js" width="36" height="36" /></a>
 <a href="https://nextjs.org/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/nextjs-colored-dark.svg" alt="Next.js" title="Next.js" width="36" height="36" /></a>
@@ -58,14 +64,15 @@ follow **Clean Architecture** with Inversify dependency injection.
 <a href="https://www.figma.com/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/figma-colored.svg" alt="Figma" title="Figma" width="36" height="36" /></a>
 </p>
 
-> Also powered by **Bun · Turborepo · Prisma · Drizzle · BullMQ · Meilisearch · Socket.IO · Omise · Terraform**
+> Also powered by **Go · Bun · Turborepo · Prisma · Drizzle · BullMQ · Meilisearch · Socket.IO · Omise**
 
 ### Engineering Highlights
 
 * 🧩 **Clean Architecture** across every service (api / business / data / shared layers) with DI containers
 * 🔄 **CQRS-style data flow** — Prisma owns the schema, Drizzle reads it for low-latency socket queries
 * 💳 **Payments** via Omise · **Push** via Firebase Cloud Messaging · **Auth** via JWT (access + refresh)
-* 🚀 **CI/CD** — Jenkins pipelines deploying to ECS across DEV / UAT / PROD environments
+* 🚀 **CI/CD** — GitHub Actions deploying to ECS across DEV / UAT / PROD, every release tagged `vX.Y.Z`
+* 🔐 **Security by design** — ES256 tokens verified via JWKS, append-only audit logs, dependency scanning on every change
 
 ---
 
